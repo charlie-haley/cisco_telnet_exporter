@@ -1,0 +1,19 @@
+{{- if .Values.serviceMonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "tplink_smartplug_exporter.fullname" . }}
+  labels:
+    {{- include "tplink_smartplug_exporter.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "tplink_smartplug_exporter.fullname" . }}
+      release: {{ .Release.Name }}
+  endpoints:
+    - honorLabels: true
+      path: /metrics
+      port: metrics
+  namespaceSelector:
+    any: true
+{{- end }}
