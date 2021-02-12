@@ -22,27 +22,15 @@ var (
 
 func main() {
 	conn, _ := telnet.DialTo(fmt.Sprintf("%s:%v", "192.168.1.154", "23"))
+
 	conn.Write([]byte("Rand0ms!\r\n"))
+	read()
 
-	buff := ""
-	for buff = ""; !strings.Contains(buff, "Switch>"); {
-		b := []byte{0}
-		conn.Read(b)
-		buff += string(b[0])
-		fmt.Println(buff)
-	}
 	conn.Write([]byte("show env all\r\n"))
-
-	buff = ""
-	for buff = ""; !strings.Contains(buff, "Switch>"); {
-		b := []byte{0}
-		conn.Read(b)
-		buff += string(b[0])
-		fmt.Println(buff)
-	}
+	response := read()
 
 	r := regexp.MustCompile("Temperature Value: .*?Celsius*")
-	match := r.FindString(buff)
+	match := r.FindString(response)
 	s := strings.Split(match, " ")[2]
 	fmt.Println(s)
 
@@ -51,4 +39,14 @@ func main() {
 
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":9504", nil)
+}
+
+func read() string {
+	buff := ""
+	for buff = ""; !strings.Contains(buff, "Switch>"); {
+		b := []byte{0}
+		conn.Read(b)
+		buff += string(b[0])
+	}
+	return buff
 }
