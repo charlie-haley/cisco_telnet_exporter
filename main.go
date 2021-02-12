@@ -21,9 +21,9 @@ var (
 )
 
 func main() {
-	conn, _ := telnet.DialTo(fmt.Sprintf("%s:%v", "192.168.1.154", "23"))
+	conn, _ := telnet.DialTo(fmt.Sprintf("%s:%v", os.Getenv("CISCO_IP"), os.Getenv("CISCO_PORT")))
 
-	conn.Write([]byte("Rand0ms!\r\n"))
+	conn.Write([]byte(os.Getenv("CISCO_PASS") + "\r\n"))
 	read()
 
 	conn.Write([]byte("show env all\r\n"))
@@ -35,7 +35,7 @@ func main() {
 	fmt.Println(s)
 
 	temp, _ := strconv.ParseFloat(s, 8)
-	telnetTemp.WithLabelValues("192.168.1.154").Set(temp)
+	telnetTemp.WithLabelValues(os.Getenv("CISCO_IP")).Set(temp)
 
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(":9504", nil)
