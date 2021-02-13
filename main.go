@@ -22,7 +22,18 @@ var (
 	}, []string{"instance"})
 )
 
+var (
+	telnetPower = promauto.NewGaugeVec(prometheus.GaugeOpts{
+		Name: "cisco_power_used",
+		Help: "Current power usage in watts",
+	}, []string{"instance"})
+)
+
 func main() {
+	os.Setenv("CISCO_IP", "192.168.1.154")
+	os.Setenv("CISCO_PORT", "23")
+	os.Setenv("CISCO_PASS", "admin")
+
 	conn, _ := telnet.DialTo(fmt.Sprintf("%s:%v", os.Getenv("CISCO_IP"), os.Getenv("CISCO_PORT")))
 
 	go getData(conn)
@@ -36,19 +47,26 @@ func getData(conn *telnet.Conn) {
 		conn.Write([]byte(os.Getenv("CISCO_PASS") + "\r\n"))
 		read(conn)
 
-		conn.Write([]byte("show env all\r\n"))
-		response := read(conn)
-
-		r := regexp.MustCompile("Temperature Value: .*?Celsius*")
-		match := r.FindString(response)
-		s := strings.Split(match, " ")[2]
-		fmt.Println(s)
-
-		temp, _ := strconv.ParseFloat(s, 8)
+		tempRes := findValue(conn, "show env all", "Temperature Value: .*?Celsius*")
+		temp, _ := strconv.ParseFloat(tempRes[2], 8)
 		telnetTemp.WithLabelValues(os.Getenv("CISCO_IP")).Set(temp)
+
+		powerRes := findValue(conn, "show power inline", "Available.*?Used.*?Remaining*?")
+		value := strings.TrimLeft(strings.TrimRight(powerRes[2], "(w)"), "Used:")
+		parsedValue, _ := strconv.ParseFloat(value, 8)
+		telnetPower.WithLabelValues(os.Getenv("CISCO_IP")).Set(parsedValue)
 
 		time.Sleep(2 * time.Second)
 	}
+}
+
+func findValue(conn *telnet.Conn, cmd string, regex string) []string {
+	conn.Write([]byte(cmd + "\r\n"))
+	response := read(conn)
+
+	r := regexp.MustCompile(regex)
+	match := r.FindString(response)
+	return strings.Split(match, " ")
 }
 
 func read(conn *telnet.Conn) string {
