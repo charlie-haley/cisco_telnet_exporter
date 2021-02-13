@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -16,7 +17,7 @@ import (
 var (
 	telnetTemp = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "cisco_telnet_temp",
-		Help: "The total number of processed events",
+		Help: "The temperature of the switch",
 	}, []string{"instance"})
 )
 
@@ -24,10 +25,10 @@ func main() {
 	conn, _ := telnet.DialTo(fmt.Sprintf("%s:%v", os.Getenv("CISCO_IP"), os.Getenv("CISCO_PORT")))
 
 	conn.Write([]byte(os.Getenv("CISCO_PASS") + "\r\n"))
-	read()
+	read(conn)
 
 	conn.Write([]byte("show env all\r\n"))
-	response := read()
+	response := read(conn)
 
 	r := regexp.MustCompile("Temperature Value: .*?Celsius*")
 	match := r.FindString(response)
@@ -41,7 +42,7 @@ func main() {
 	http.ListenAndServe(":9504", nil)
 }
 
-func read() string {
+func read(conn *telnet.Conn) string {
 	buff := ""
 	for buff = ""; !strings.Contains(buff, "Switch>"); {
 		b := []byte{0}

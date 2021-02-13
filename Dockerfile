@@ -1,9 +1,10 @@
-FROM python:3
+FROM golang:alpine3.13
+RUN mkdir /app
+WORKDIR /app
 
-EXPOSE 9784
+COPY . .
+RUN go build -o main .
 
-ADD tplink_smartplug.py /
-
-RUN pip install prometheus-client
-
-CMD [ "python", "./tplink_smartplug.py" ]
+EXPOSE 9504
+ock
+CMD ["/app/main"]
