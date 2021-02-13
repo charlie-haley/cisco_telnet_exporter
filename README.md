@@ -1,7 +1,7 @@
 # cisco_telnet_exporter
 Prometheus Exporter for Cisco Catalyst switches using telnet.
 
-## Tested Devices
+### Tested Devices
 - Cisco 3560g-48ps
 
 ## Installation
