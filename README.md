@@ -36,3 +36,4 @@ If you want to use the ServiceMonitor (which is enabled by default) you'll need 
 Name               | Description                          | Labels
 -------------------|--------------------------------------|------
 cisco_telnet_temp  | The temperature of the switch        | instance
+cisco_power_used   | Current power usage in watts         | instance
