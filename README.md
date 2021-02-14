@@ -19,7 +19,7 @@ docker run -d \
 
 ### Helm
 ```
-helm repo add charlie-haley https://charlie-haley.github.io/private-charts
+helm repo add charlie-haley http://charts.charliehaley.dev
 helm repo update
 helm install cisco-telnet-exporter charlie-haley/cisco-telnet-exporter \
     --set "cisco.ip=192.168.1.145" \ 
