@@ -22,10 +22,10 @@ docker run -d \
 helm repo add charlie-haley https://charlie-haley.github.io/private-charts
 helm repo update
 helm install cisco-telnet-exporter charlie-haley/cisco-telnet-exporter \
---set "cisco.ip=192.168.1.145" \ 
---set "cisco.port=23" \
---set "cisco.password=admin" \
--n monitoring
+    --set "cisco.ip=192.168.1.145" \ 
+    --set "cisco.port=23" \
+    --set "cisco.password=admin" \
+    -n monitoring
 ```
 
 If you want to use the ServiceMonitor (which is enabled by default) you'll need to have [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator) deployed to your cluster, see [values](charts/tplink-smartplug-exporter/values.yaml) to disable it if you'd like use ingress instead.
