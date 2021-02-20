@@ -34,4 +34,4 @@ jobs:
     - name: Run Buildx (push image)      
       if: success()      
       run: |
-        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t chhaley/cisco_telnet_exporter:latest --push .
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t chhaley/cisco_telnet_exporter:${GITHUB_RUN_NUMBER} --push .
