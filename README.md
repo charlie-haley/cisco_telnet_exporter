@@ -28,7 +28,7 @@ helm install cisco-telnet-exporter charlie-haley/cisco-telnet-exporter \
     -n monitoring
 ```
 
-If you want to use the ServiceMonitor (which is enabled by default) you'll need to have [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator) deployed to your cluster, see [values](charts/tplink-smartplug-exporter/values.yaml) to disable it if you'd like use ingress instead.
+If you want to use the ServiceMonitor (which is enabled by default) you'll need to have [prometheus-operator](https://github.com/prometheus-operator/prometheus-operator) deployed to your cluster, see [values](https://github.com/charlie-haley/private-charts/blob/main/charts/cisco-telnet-exporter/values.yaml) to disable it if you'd like use ingress instead.
 
 [You can find the chart repo here](https://github.com/charlie-haley/private-charts), if you'd like to contribute. 
 
