@@ -30,10 +30,6 @@ var (
 )
 
 func main() {
-	os.Setenv("CISCO_IP", "192.168.1.154")
-	os.Setenv("CISCO_PORT", "23")
-	os.Setenv("CISCO_PASS", "admin")
-
 	conn, _ := telnet.DialTo(fmt.Sprintf("%s:%v", os.Getenv("CISCO_IP"), os.Getenv("CISCO_PORT")))
 
 	go getData(conn)
