@@ -1,4 +1,6 @@
 # cisco_telnet_exporter
+![docker-publish](https://github.com/charlie-haley/cisco_telnet_exporter/actions/workflows/docker-publish.yml/badge.svg)
+
 Prometheus Exporter for Cisco Catalyst switches using telnet.
 
 ### Tested Devices
